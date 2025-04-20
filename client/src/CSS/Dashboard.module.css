@@ -1,0 +1,230 @@
+body {
+  background-color:rgb(136 144 187) !important;
+  font-family: 'Arial', sans-serif !important;
+  color: #333 !important;
+}
+
+.GroupCard{
+  text-align: center;
+}
+.GroupCard ul{
+  list-style: none;
+}
+.logoutButton{
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 25px !important;
+    
+            
+}
+.logoutButton button:hover{
+  background-color: #9c27b0 !important;
+  color:rgb(218, 218, 218) !important;
+}
+.container {
+  padding: 30px;
+  height: auto;
+  background-color: #e2e2e2;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /* width: 100vw !important;
+  height: auto !important; */
+}
+
+
+.header {
+  background: linear-gradient(135deg, #6a11cb, #2575fc) !important;
+  padding: 2rem !important;
+  border-radius: 20px !important;
+  color: #ffffff !important;
+  text-align: center !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2) !important;
+  margin-bottom: 2rem !important;
+  animation: fadeIn 1s ease-in-out !important;
+}
+.headerTitle {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+  font-size: 2.5rem !important;
+  margin-bottom: 0.5rem !important;
+  color: #ffffff !important;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3) !important;
+}
+.transactions{
+      display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+.subTitle {
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.savings {
+   margin-top: 1rem !important;
+  font-size: 1.8rem !important;
+  color: #ffeb3b !important;
+  text-shadow: 1px 1px 2px #000 !important;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0 !important;
+    transform: translateY(-10px) !important;
+  }
+  to {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+  }
+}
+.savingsTransaction {
+  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 30px;
+}
+
+.transactionAmount {
+  width: 200px !important;
+  height: auto !important;
+  font-size: 1rem !important;
+  padding: 10px !important;
+  border: 1px solid #ddd !important;
+  border-radius: 5px !important;
+  
+ 
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0 !important;
+}
+
+
+
+.transactionAmount.no-style{
+    background-color: transparent !important;
+    border: none;
+    padding: 0;
+}
+
+.transactionAmount.highlighted {
+  background-color: #e0f7fa;
+  border-color: #81d4fa;
+  font-weight: bold;
+  color: #007bff;
+}
+
+.transactionButton {
+  
+
+      margin-left: 2px !important;
+    background-color: #3f51b5 !important;
+    color: white !important;
+    font-size: 13px !important;
+    font-weight: bold !important;
+    padding: 9px 10px !important;
+    border: none !important;
+    border-radius: 5px !important;
+    transition: background-color 0.3s ease !important;
+}
+.Chart{
+  box-sizing: border-box;
+    display: block;
+    height: 85% !important;
+    width: 344px;
+}
+.transactionButton:hover {
+  background-color: #283593;
+}
+
+.groupsTitle {
+  
+    margin-bottom: 10px !important;
+    font-size: 1.3rem !important;
+    font-weight: 500 !important;
+    text-align: center;
+}
+
+.createGroupButton {
+  margin-top: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 24px;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 5px;
+  border: none;
+  text-align: center;
+  transition: background-color 0.3s ease;
+
+}
+
+
+
+.groupCardContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 25px;
+  margin-bottom: 30px;
+}
+
+.chartContainer {
+  height: 60vh;
+  width: 45vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.chartTitle {
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #333;
+}
+
+@media (max-width: 768px) {
+  .chartContainer {
+    width: 90vw;
+    height: 50vh;
+    padding: 20px;
+  }
+
+  .groupCardContainer {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .savingsTransaction {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .transactionAmount {
+    width: 80%;
+    margin-bottom: 15px;
+  }
+
+  .transactionButton {
+    width: 80%;
+    padding: 15px;
+    margin-top: 15px !important;
+    
+  }
+
+  .createGroupButton {
+    width: 80%;
+    margin-top: 20px;
+  }
+}

@@ -1,0 +1,121 @@
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f4f6f8;  
+  color: #333;  
+  line-height: 1.6;
+}
+
+.dashboard-title {
+  font-size: 3rem;
+  font-weight: 500;
+  color: #3f51b5;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.savings-section {
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: #333;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.group-section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.group-card {
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  padding: 20px;
+  transition: box-shadow 0.3s ease;
+}
+
+.group-card:hover {
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+}
+
+.group-card-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #3f51b5;
+  margin-bottom: 10px;
+}
+
+.group-card-members {
+  font-size: 1rem;
+  color: #555;
+}
+
+.group-card-button {
+  margin-top: 15px;
+}
+
+.create-group-btn {
+  margin-top: 20px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.dialog-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.dialog-content {
+  padding: 20px;
+}
+
+.dialog-input {
+  margin-bottom: 15px;
+}
+
+.dialog-member-list {
+  margin-top: 15px;
+}
+
+.dialog-member-item {
+  font-size: 1rem;
+  color: #555;
+}
+
+.dialog-button {
+  margin-right: 10px;
+}
+
+.text-field {
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.text-field input {
+  padding: 12px;
+}
+
+button {
+  border-radius: 30px;
+  padding: 10px 20px;
+  text-transform: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+button:hover {
+  background-color: #303f9f;
+  color: white;
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+}
