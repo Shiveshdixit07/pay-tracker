@@ -8,8 +8,25 @@ import {
   Grid2,
   Container,
   TextField,
+  Fade,
+  Slide,
+  CircularProgress,
+  Skeleton,
+  Snackbar,
+  Alert,
+  Chip,
+  IconButton,
+  Tooltip,
 } from "@mui/material";
-import { Add } from "@mui/icons-material";
+import { 
+  Add, 
+  TrendingUp, 
+  TrendingDown, 
+  AccountBalanceWallet,
+  Group,
+  Logout,
+  Refresh
+} from "@mui/icons-material";
 import GroupCard from "./GroupCard";
 import AddGroupDialog from "./AddGroupDialog";
 import { Line } from "react-chartjs-2";
@@ -20,18 +37,21 @@ import {
   LineElement,
   PointElement,
   Title,
-  Tooltip,
+  Tooltip as ChartTooltip,
   Legend,
+  Filler,
 } from "chart.js";
 import styles from "./CSS/Dashboard.module.css";
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
   LineElement,
   PointElement,
   Title,
-  Tooltip,
-  Legend
+  ChartTooltip,
+  Legend,
+  Filler
 );
 
 const Dashboard = ({ UserEmail, userName, userPhoneNumber }) => {
@@ -46,8 +66,21 @@ const Dashboard = ({ UserEmail, userName, userPhoneNumber }) => {
   const [expense, setExpense] = useState(0);
   const [expenseHistory, setExpenseHistory] = useState([]);
   const [creditAmt, setCreditAmt] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "info" });
+
+  const showSnackbar = (message, severity = "info") => {
+    setSnackbar({ open: true, message, severity });
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
+
   useEffect(() => {
     const getAllGroups = async () => {
+      setLoading(true);
       try {
         const url = `http://localhost:5000/${UserEmail}/api/balance`;
         const response = await axios.get(url);
@@ -69,7 +102,9 @@ const Dashboard = ({ UserEmail, userName, userPhoneNumber }) => {
         }
       } catch (error) {
         console.error("Error fetching balance:", error);
+        showSnackbar("Error fetching balance data", "error");
       }
+      
       try {
         if (UserEmail) {
           const url = `http://localhost:5000/${UserEmail}/api/groups`;
@@ -80,13 +115,31 @@ const Dashboard = ({ UserEmail, userName, userPhoneNumber }) => {
         }
       } catch (error) {
         console.error("Error getting groups:", error);
-        alert("An error occurred while getting the groups.");
+        showSnackbar("Error loading groups", "error");
+      } finally {
+        setLoading(false);
       }
     };
 
     getAllGroups();
     setPeople([{ name: `Me`, contact: userPhoneNumber }]);
   }, [UserEmail, userPhoneNumber]);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    try {
+      const url = `http://localhost:5000/${UserEmail}/api/groups`;
+      const response = await axios.get(url);
+      if (response.status === 200) {
+        setGroups(response.data);
+        showSnackbar("Data refreshed successfully", "success");
+      }
+    } catch (error) {
+      showSnackbar("Error refreshing data", "error");
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   const handleAddExpense = async () => {
     if (expense > 0) {
@@ -108,13 +161,15 @@ const Dashboard = ({ UserEmail, userName, userPhoneNumber }) => {
         });
 
         setExpense(0);
+        showSnackbar(`Expense of ₹${expense} added successfully`, "success");
       } else {
-        alert("Insufficient balance to make this expense.");
+        showSnackbar("Insufficient balance to make this expense", "error");
       }
     } else {
-      alert("Please enter a valid expense amount.");
+      showSnackbar("Please enter a valid expense amount", "warning");
     }
   };
+
   const handleAddSavings = async () => {
     if (creditAmt > 0) {
       const d = Number(creditAmt) + Number(savings);
@@ -128,10 +183,12 @@ const Dashboard = ({ UserEmail, userName, userPhoneNumber }) => {
         expenseHistory: expenseHistory,
       });
       setCreditAmt(0);
+      showSnackbar(`₹${creditAmt} added to savings successfully`, "success");
     } else {
-      alert("Please enter a valid credit amount.");
+      showSnackbar("Please enter a valid credit amount", "warning");
     }
   };
+
   const handleLogout = () => {
     localStorage.clear();
     navigate("/");
@@ -143,7 +200,61 @@ const Dashboard = ({ UserEmail, userName, userPhoneNumber }) => {
       setPersonName("");
       setPersonContact("");
     } else {
-      alert("Please enter both name and contact number.");
+      showSnackbar("Please enter both name and contact number", "warning");
+    }
+  };
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'top',
+        labels: {
+          usePointStyle: true,
+          padding: 20,
+          font: {
+            size: 12,
+            weight: 'bold'
+          }
+        }
+      },
+      tooltip: {
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        titleColor: 'white',
+        bodyColor: 'white',
+        borderColor: '#667eea',
+        borderWidth: 1,
+        cornerRadius: 8,
+        displayColors: false,
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        grid: {
+          color: 'rgba(0, 0, 0, 0.1)',
+        },
+        ticks: {
+          callback: function(value) {
+            return '₹' + value;
+          }
+        }
+      },
+      x: {
+        grid: {
+          color: 'rgba(0, 0, 0, 0.1)',
+        }
+      }
+    },
+    elements: {
+      point: {
+        radius: 6,
+        hoverRadius: 8,
+      },
+      line: {
+        tension: 0.4,
+      }
     }
   };
 
@@ -153,27 +264,89 @@ const Dashboard = ({ UserEmail, userName, userPhoneNumber }) => {
       {
         label: "Expenses Over Time",
         data: expenseHistory.map((entry) => entry.amount),
-        borderColor: "#3f51b5",
-        backgroundColor: "#3f51b5",
-        fill: false,
+        borderColor: "#667eea",
+        backgroundColor: "rgba(102, 126, 234, 0.1)",
+        fill: true,
+        pointBackgroundColor: "#667eea",
+        pointBorderColor: "white",
+        pointBorderWidth: 2,
+        pointHoverBackgroundColor: "#764ba2",
+        pointHoverBorderColor: "white",
+        pointHoverBorderWidth: 3,
       },
     ],
   };
 
+  const totalExpenses = expenseHistory.reduce((sum, entry) => sum + entry.amount, 0);
+  const avgExpense = expenseHistory.length > 0 ? totalExpenses / expenseHistory.length : 0;
+
+  if (loading) {
+    return (
+      <Container className={styles.container}>
+        <Box className={styles.header}>
+          <Skeleton variant="text" width={300} height={60} sx={{ bgcolor: 'rgba(255,255,255,0.2)' }} />
+          <Skeleton variant="text" width={200} height={40} sx={{ bgcolor: 'rgba(255,255,255,0.2)' }} />
+          <Skeleton variant="rectangular" width={250} height={60} sx={{ bgcolor: 'rgba(255,255,255,0.2)', borderRadius: '20px', margin: '0 auto' }} />
+        </Box>
+        <Grid2 container spacing={4}>
+          <Grid2 item xs={12} md={6}>
+            <Box display="flex" gap={2} justifyContent="center" flexWrap="wrap" mb={3}>
+              <Skeleton variant="rectangular" width={280} height={150} sx={{ bgcolor: 'rgba(255,255,255,0.2)', borderRadius: '16px' }} />
+              <Skeleton variant="rectangular" width={280} height={150} sx={{ bgcolor: 'rgba(255,255,255,0.2)', borderRadius: '16px' }} />
+            </Box>
+          </Grid2>
+        </Grid2>
+      </Container>
+    );
+  }
+
   return (
     <Container className={styles.container}>
-      <Box className={styles.header}>
-        <Typography variant="h3" className={styles.headerTitle}>
-          PayTracker Dashboard
-        </Typography>
-        <Typography variant="h4">
-          <strong>Welcome {userName}!!</strong>
-        </Typography>
+      <Fade in timeout={1000}>
+        <Box className={styles.header}>
+          <Typography variant="h3" className={styles.headerTitle}>
+            PayTracker Dashboard
+          </Typography>
+          <Slide direction="down" in timeout={1200}>
+            <Typography variant="h4">
+              <strong>Welcome {userName}! 👋</strong>
+            </Typography>
+          </Slide>
 
-        <Typography variant="h5" className={styles.savings}>
-          <strong>Current Savings: ₹{savings}</strong>
-        </Typography>
-      </Box>
+          <Slide direction="up" in timeout={1400}>
+            <Box display="inline-block" position="relative">
+              <Typography variant="h5" className={styles.savings}>
+                <AccountBalanceWallet sx={{ mr: 1, verticalAlign: 'middle' }} />
+                <strong>Current Savings: ₹{savings?.toLocaleString()}</strong>
+              </Typography>
+              {expenseHistory.length > 0 && (
+                <Box mt={1} display="flex" gap={1} justifyContent="center" flexWrap="wrap">
+                  <Chip 
+                    icon={<TrendingDown />} 
+                    label={`Total Spent: ₹${totalExpenses.toLocaleString()}`}
+                    size="small"
+                    sx={{ 
+                      background: 'rgba(255,255,255,0.2)', 
+                      color: 'white',
+                      backdropFilter: 'blur(10px)'
+                    }} 
+                  />
+                  <Chip 
+                    icon={<TrendingUp />} 
+                    label={`Avg Expense: ₹${Math.round(avgExpense).toLocaleString()}`}
+                    size="small"
+                    sx={{ 
+                      background: 'rgba(255,255,255,0.2)', 
+                      color: 'white',
+                      backdropFilter: 'blur(10px)'
+                    }} 
+                  />
+                </Box>
+              )}
+            </Box>
+          </Slide>
+        </Box>
+      </Fade>
 
       <Grid2
         container
@@ -190,115 +363,215 @@ const Dashboard = ({ UserEmail, userName, userPhoneNumber }) => {
           md={6}
           sx={{ textAlign: expenseHistory.length > 0 ? "left" : "center" }}
         >
-          <div className={styles.transactions}>
-            <Box className={styles.savingsTransaction}>
-              <TextField
-                label="Credit amount"
-                type="number"
-                value={creditAmt}
-                onChange={(e) => setCreditAmt(e.target.value)}
-                className={styles.transactionAmount}
-              />
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleAddSavings}
-                className={styles.transactionButton}
-              >
-                Add Savings
-              </Button>
-            </Box>
-            <Box className={styles.savingsTransaction}>
-              <TextField
-                label="Expense amount"
-                type="number"
-                value={expense}
-                onChange={(e) => setExpense(e.target.value)}
-                className={styles.transactionAmount}
-              />
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleAddExpense}
-                className={styles.transactionButton}
-              >
-                Add Expense
-              </Button>
-            </Box>
-          </div>
-
-          <Typography variant="h6" className={styles.groupsTitle}>
-            Expense Sharing Groups
-          </Typography>
-          <Grid2 container spacing={3} justifyContent="center">
-            {groups.length > 0 ? (
-              groups.map((group, index) => (
-                <Grid2
-                  item
-                  xs={12}
-                  sm={6}
-                  md={4}
-                  key={index}
-                  className={styles.GroupCard}
+          <Slide direction="right" in timeout={800}>
+            <div className={styles.transactions}>
+              <Box className={styles.savingsTransaction}>
+                <TextField
+                  label="💰 Credit amount"
+                  type="number"
+                  value={creditAmt}
+                  onChange={(e) => setCreditAmt(e.target.value)}
+                  className={styles.transactionAmount}
+                  variant="outlined"
+                  InputProps={{
+                    startAdornment: <Typography sx={{ mr: 1, color: 'text.secondary' }}>₹</Typography>,
+                  }}
+                />
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleAddSavings}
+                  className={styles.transactionButton}
+                  startIcon={<TrendingUp />}
+                  disabled={!creditAmt || creditAmt <= 0}
                 >
-                  <GroupCard
-                    group={group}
-                    currUser={UserEmail}
-                    currUserName={userName}
-                  />
-                </Grid2>
-              ))
-            ) : (
-              <Typography variant="body1">No groups created yet.</Typography>
-            )}
-          </Grid2>
-          <Box className={styles.createGroupButton}>
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<Add />}
-              onClick={() => setOpenDialog(true)}
-            >
-              Create Group
-            </Button>
-          </Box>
+                  Add Savings
+                </Button>
+              </Box>
+              <Box className={styles.savingsTransaction}>
+                <TextField
+                  label="💸 Expense amount"
+                  type="number"
+                  value={expense}
+                  onChange={(e) => setExpense(e.target.value)}
+                  className={styles.transactionAmount}
+                  variant="outlined"
+                  InputProps={{
+                    startAdornment: <Typography sx={{ mr: 1, color: 'text.secondary' }}>₹</Typography>,
+                  }}
+                />
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleAddExpense}
+                  className={styles.transactionButton}
+                  startIcon={<TrendingDown />}
+                  disabled={!expense || expense <= 0}
+                >
+                  Add Expense
+                </Button>
+              </Box>
+            </div>
+          </Slide>
 
-          <AddGroupDialog
-            openDialog={openDialog}
-            setOpenDialog={setOpenDialog}
-            newGroupName={newGroupName}
-            setNewGroupName={setNewGroupName}
-            personName={personName}
-            setPersonName={setPersonName}
-            personContact={personContact}
-            setPersonContact={setPersonContact}
-            people={people}
-            setPeople={setPeople}
-            handleAddPerson={handleAddPerson}
-            handleGetGroup={setGroups}
-            groups={groups}
-            currUser={UserEmail}
-            currUserName={userName}
-            currUserPhoneNumber={userPhoneNumber}
-          />
+          <Fade in timeout={1600}>
+            <Box>
+              <Box display="flex" alignItems="center" justifyContent="center" gap={2} mb={2}>
+                <Typography variant="h6" className={styles.groupsTitle}>
+                  <Group sx={{ mr: 1, verticalAlign: 'middle' }} />
+                  Expense Sharing Groups ({groups.length})
+                </Typography>
+                <Tooltip title="Refresh groups">
+                  <IconButton 
+                    onClick={handleRefresh} 
+                    disabled={refreshing}
+                    sx={{ color: 'white' }}
+                  >
+                    {refreshing ? <CircularProgress size={20} color="inherit" /> : <Refresh />}
+                  </IconButton>
+                </Tooltip>
+              </Box>
+              
+              <Grid2 container spacing={3} justifyContent="center">
+                {groups.length > 0 ? (
+                  groups.map((group, index) => (
+                    <Slide direction="up" in timeout={1000 + index * 200} key={index}>
+                      <Grid2
+                        item
+                        xs={12}
+                        sm={6}
+                        md={4}
+                        className={styles.GroupCard}
+                      >
+                        <GroupCard
+                          group={group}
+                          currUser={UserEmail}
+                          currUserName={userName}
+                        />
+                      </Grid2>
+                    </Slide>
+                  ))
+                ) : (
+                  <Fade in timeout={2000}>
+                    <Box textAlign="center" py={4}>
+                      <Group sx={{ fontSize: 48, color: 'rgba(255,255,255,0.5)', mb: 2 }} />
+                      <Typography variant="body1" sx={{ color: 'rgba(255,255,255,0.8)' }}>
+                        No groups created yet. Start by creating your first group!
+                      </Typography>
+                    </Box>
+                  </Fade>
+                )}
+              </Grid2>
+              
+              <Slide direction="up" in timeout={1800}>
+                <Box className={styles.createGroupButton}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<Add />}
+                    onClick={() => setOpenDialog(true)}
+                    size="large"
+                  >
+                    Create New Group
+                  </Button>
+                </Box>
+              </Slide>
+
+              <AddGroupDialog
+                openDialog={openDialog}
+                setOpenDialog={setOpenDialog}
+                newGroupName={newGroupName}
+                setNewGroupName={setNewGroupName}
+                personName={personName}
+                setPersonName={setPersonName}
+                personContact={personContact}
+                setPersonContact={setPersonContact}
+                people={people}
+                setPeople={setPeople}
+                handleAddPerson={handleAddPerson}
+                handleGetGroup={setGroups}
+                groups={groups}
+                currUser={UserEmail}
+                currUserName={userName}
+                currUserPhoneNumber={userPhoneNumber}
+              />
+            </Box>
+          </Fade>
         </Grid2>
 
         {expenseHistory.length > 0 && (
-          <Grid2 item xs={12} md={6}>
-            <Box className={styles.chartContainer}>
-              <Typography variant="h6" className={styles.chartTitle}>
-                Expense Graph
-              </Typography>
-              <Line data={chartData} className={styles.Chart} />
-            </Box>
-          </Grid2>
+          <Slide direction="left" in timeout={1200}>
+            <Grid2 item xs={12} md={6}>
+              <Box className={styles.chartContainer}>
+                <Typography variant="h6" className={styles.chartTitle}>
+                  📊 Expense Analytics
+                </Typography>
+                <Box height={300}>
+                  <Line data={chartData} options={chartOptions} className={styles.Chart} />
+                </Box>
+                <Box mt={2} display="flex" justifyContent="space-around" flexWrap="wrap">
+                  <Box textAlign="center">
+                    <Typography variant="caption" color="text.secondary">
+                      Total Transactions
+                    </Typography>
+                    <Typography variant="h6" fontWeight="bold">
+                      {expenseHistory.length}
+                    </Typography>
+                  </Box>
+                  <Box textAlign="center">
+                    <Typography variant="caption" color="text.secondary">
+                      Highest Expense
+                    </Typography>
+                    <Typography variant="h6" fontWeight="bold">
+                      ₹{Math.max(...expenseHistory.map(e => e.amount)).toLocaleString()}
+                    </Typography>
+                  </Box>
+                  <Box textAlign="center">
+                    <Typography variant="caption" color="text.secondary">
+                      Recent Activity
+                    </Typography>
+                    <Typography variant="h6" fontWeight="bold">
+                      {expenseHistory.length > 0 ? expenseHistory[expenseHistory.length - 1].date : 'N/A'}
+                    </Typography>
+                  </Box>
+                </Box>
+              </Box>
+            </Grid2>
+          </Slide>
         )}
       </Grid2>
-      <div className={styles.logoutButton}>
-        <Button variant="contained" color="secondary" onClick={handleLogout}>
-          Logout
-        </Button>
-      </div>
+      
+      <Tooltip title="Logout">
+        <div className={styles.logoutButton}>
+          <Button 
+            variant="contained" 
+            color="secondary" 
+            onClick={handleLogout}
+            startIcon={<Logout />}
+          >
+            Logout
+          </Button>
+        </div>
+      </Tooltip>
+
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={4000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert 
+          onClose={handleCloseSnackbar} 
+          severity={snackbar.severity}
+          variant="filled"
+          sx={{ 
+            borderRadius: '12px',
+            backdropFilter: 'blur(10px)',
+          }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };

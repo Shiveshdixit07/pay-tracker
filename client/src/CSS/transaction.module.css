@@ -1,30 +1,89 @@
-
 .container {
-  padding: 20px;
   max-width: 800px;
-  margin: 0 auto;
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2.5rem;
+  gap: 1rem;
+  padding: 1rem;
+  background: linear-gradient(to right, #f8f9fa, #ffffff);
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+}
+
+.backButton {
+  color: #666;
+  transition: all 0.2s ease;
+  background-color: #f8f9fa !important;
+  padding: 8px !important;
+}
+
+.backButton:hover {
+  color: #333;
+  transform: translateX(-3px);
+  background-color: #e9ecef !important;
 }
 
 .title {
-  color: #3f51b5;
-  margin-bottom: 20px;
-  text-align: center;
-  font-size: 26px;
-  font-weight: 600;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0;
+  font-size: 1.75rem;
+  letter-spacing: -0.5px;
+}
+
+.alert {
+  margin-bottom: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.summaryCard {
+  padding: 2rem;
+  margin-bottom: 2.5rem;
+  border-radius: 16px;
+  background: white;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.summaryCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
 }
 
 .subtitle {
-  margin-bottom: 10px;
-  font-size: 18px;
-  font-weight: 500;
-  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #2c3e50;
+  margin-bottom: 2rem;
+  font-weight: 600;
+  font-size: 1.25rem;
+}
+
+.icon {
+  color: #3498db;
+  font-size: 1.5rem !important;
+}
+
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  padding: 3rem;
 }
 
 .list {
-  list-style: none;
   padding: 0;
 }
 
@@ -32,104 +91,164 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px;
+  padding: 1.25rem 1rem;
+  transition: background-color 0.2s ease;
   border-radius: 8px;
-  background-color: #fff;
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-  margin-bottom: 10px;
-  transition: transform 0.2s ease-in-out;
-}
-.netAmts{
-  right: 10px;
-  position: absolute;
 }
 
 .listItem:hover {
-  transform: scale(1.02);
+  background-color: #f8f9fa;
 }
 
-.listItem.owed {
-  background-color: #e8f5e9;
+.memberName {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #2c3e50;
 }
 
-.listItem.owes {
-  background-color: #ffebee;
+.netAmts {
+  font-weight: 700;
+  font-size: 1.2rem;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.negative {
+  color: #e74c3c;
+  background-color: rgba(231, 76, 60, 0.1);
+}
+
+.positive {
+  color: #2ecc71;
+  background-color: rgba(46, 204, 113, 0.1);
+}
+
+.noMembers {
+  text-align: center;
+  color: #666;
+  padding: 3rem 0;
+  font-size: 1.1rem;
 }
 
 .buttonContainer {
   display: flex;
-  gap: 10px;
-  margin-top: 20px;
+  justify-content: center;
+  margin-top: 2.5rem;
 }
 
 .primaryButton {
-  background-color: #3f51b5;
-  margin-left: 20px;
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background 0.3s ease-in-out;
-}
-.settleButton{
-  background-color: #3f51b5;
-  color: white;
-  padding: 7px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background 0.3s ease-in-out;
-  position: absolute;
-  left: 28px;
+  background: linear-gradient(135deg, #3498db, #2980b9) !important;
+  color: white !important;
+  padding: 0.75rem 2rem !important;
+  text-transform: none !important;
+  font-size: 1.1rem !important;
+  font-weight: 600 !important;
+  border-radius: 12px !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2) !important;
 }
 
 .primaryButton:hover {
-  background-color: #2c387e;
-}
-
-.secondaryButton {
-  background-color: transparent;
-  color: #3f51b5;
-  padding: 10px 15px;
-  border: 2px solid #3f51b5;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: all 0.3s ease-in-out;
-}
-
-.secondaryButton:hover {
-  background-color: #3f51b5;
-  color: white;
-}
-
-.dialogBox {
-  padding: 20px;
-  border-radius: 10px;
-  padding-top: 5px !important
+  background: linear-gradient(135deg, #2980b9, #2573a7) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(52, 152, 219, 0.3) !important;
 }
 
 .dialogTitle {
-  font-size: 20px;
-  font-weight: 600;
-  color: #3f51b5;
+  color: #2c3e50;
+  font-weight: 700 !important;
+  padding: 2rem 2rem 1rem !important;
+  font-size: 1.5rem !important;
 }
 
-.textField {
-  width: 100%;
-  margin-bottom: 15px;
+.dialogBox {
+  padding: 1.5rem 2rem !important;
+}
+
+.sectionTitle {
+  margin: 2rem 0 1.25rem !important;
+  color: #2c3e50;
+  font-weight: 600 !important;
+  font-size: 1.2rem !important;
+}
+
+.memberGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
 }
 
 .memberSelection {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  /* padding: 8px; */
+  align-items: center;
+  padding: 1rem;
+  border-radius: 10px;
+  background-color: #f8f9fa;
+  transition: all 0.2s ease;
+  border: 1px solid #e9ecef;
+}
+
+.memberSelection:hover {
+  background-color: #e9ecef;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.textField {
+  margin-bottom: 1.5rem !important;
+}
+
+.textField input {
+  font-size: 1.1rem !important;
+  padding: 1rem !important;
 }
 
 .checkbox {
+  color: #3498db !important;
   transform: scale(1.2);
+}
+
+.dialogActions {
+  padding: 1.5rem 2rem !important;
+  gap: 1rem;
+  border-top: 1px solid #e9ecef;
+}
+
+@media (max-width: 600px) {
+  .container {
+    margin: 1rem auto;
+    padding: 0 1rem;
+  }
+
+  .header {
+    margin-bottom: 1.5rem;
+    padding: 0.75rem;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .summaryCard {
+    padding: 1.5rem;
+  }
+
+  .memberGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .dialogBox {
+    padding: 1rem !important;
+  }
+
+  .dialogTitle {
+    padding: 1.5rem 1.5rem 1rem !important;
+  }
+
+  .dialogActions {
+    padding: 1rem !important;
+  }
 }
