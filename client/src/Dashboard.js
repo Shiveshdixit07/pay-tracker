@@ -277,7 +277,7 @@ const Dashboard = ({ UserEmail, userName, userPhoneNumber }) => {
     ],
   };
 
-  const totalExpenses = expenseHistory.reduce((sum, entry) => sum + entry.amount, 0);
+  const totalExpenses = expenseHistory.reduce((sum, entry) => sum + Number(entry.amount), 0);
   const avgExpense = expenseHistory.length > 0 ? totalExpenses / expenseHistory.length : 0;
 
   if (loading) {
@@ -316,7 +316,7 @@ const Dashboard = ({ UserEmail, userName, userPhoneNumber }) => {
           <Slide direction="up" in timeout={1400}>
             <Box display="inline-block" position="relative">
               <Typography variant="h5" className={styles.savings}>
-                <AccountBalanceWallet sx={{ mr: 1, verticalAlign: 'middle' }} />
+                <AccountBalanceWallet sx={{ ml:1,mr: 1, verticalAlign: 'middle' }} />
                 <strong>Current Savings: ₹{savings?.toLocaleString()}</strong>
               </Typography>
               {expenseHistory.length > 0 && (

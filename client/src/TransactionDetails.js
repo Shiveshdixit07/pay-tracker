@@ -22,12 +22,15 @@ import {
   InputAdornment,
   Grow,
   Collapse,
+  Fade,
+  Zoom,
 } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import PaymentIcon from '@mui/icons-material/Payment';
 import GroupIcon from '@mui/icons-material/Group';
+import PersonIcon from '@mui/icons-material/Person';
 import styles from "./CSS/transaction.module.css";
 
 const TransactionDetails = () => {
@@ -149,17 +152,27 @@ const TransactionDetails = () => {
     );
   };
 
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+    setExpenseAmount("");
+    setSelectedMembers([]);
+    setPayer(null);
+    setValidationError("");
+  };
+
   if (!group) {
     return (
       <Box className={styles.container}>
-        <Alert severity="error">Group not found.</Alert>
+        <Fade in timeout={500}>
+          <Alert severity="error">Group not found.</Alert>
+        </Fade>
       </Box>
     );
   }
 
   return (
     <Box className={styles.container}>
-      <Grow in timeout={500}>
+      <Grow in timeout={800}>
         <Box className={styles.header}>
           <IconButton onClick={() => navigate(-1)} className={styles.backButton}>
             <ArrowBackIcon />
@@ -178,7 +191,7 @@ const TransactionDetails = () => {
         </Collapse>
       )}
 
-      <Grow in timeout={500}>
+      <Grow in timeout={1000}>
         <Paper elevation={3} className={styles.summaryCard}>
           <Typography variant="h6" className={styles.subtitle}>
             <AccountBalanceWalletIcon className={styles.icon} />
@@ -187,17 +200,17 @@ const TransactionDetails = () => {
 
           {loading ? (
             <Box className={styles.loadingContainer}>
-              <CircularProgress size={40} thickness={4} />
+              <CircularProgress size={50} thickness={4} />
             </Box>
           ) : (
             <List className={styles.list}>
               {members.length > 0 ? (
                 members.map((member, idx) => (
-                  <Grow 
+                  <Zoom 
                     in 
-                    timeout={500} 
+                    timeout={600} 
                     key={idx} 
-                    style={{ transitionDelay: `${idx * 100}ms` }}
+                    style={{ transitionDelay: `${idx * 150}ms` }}
                   >
                     <div>
                       <ListItem
@@ -205,9 +218,12 @@ const TransactionDetails = () => {
                           member.netAmount < 0 ? styles.owes : styles.owed
                         }`}
                       >
-                        <Typography variant="body1" className={styles.memberName}>
-                          {member.name === currentUser ? "Me" : member.name}
-                        </Typography>
+                        <Box display="flex" alignItems="center">
+                          <PersonIcon className={styles.memberIcon} />
+                          <Typography variant="body1" className={styles.memberName}>
+                            {member.name === currentUser ? "Me" : member.name}
+                          </Typography>
+                        </Box>
                         <Typography
                           className={`${styles.netAmts} ${
                             member.netAmount < 0 ? styles.negative : styles.positive
@@ -220,40 +236,45 @@ const TransactionDetails = () => {
                       </ListItem>
                       {idx < members.length - 1 && <Divider />}
                     </div>
-                  </Grow>
+                  </Zoom>
                 ))
               ) : (
-                <Typography className={styles.noMembers}>
-                  No members found.
-                </Typography>
+                <Fade in timeout={800}>
+                  <Typography className={styles.noMembers}>
+                    No members found.
+                  </Typography>
+                </Fade>
               )}
             </List>
           )}
         </Paper>
       </Grow>
 
-      <Box className={styles.buttonContainer}>
-        <Tooltip title="Add new expense" placement="top">
-          <Button
-            variant="contained"
-            className={styles.primaryButton}
-            onClick={() => setDialogOpen(true)}
-            startIcon={<AddIcon />}
-          >
-            Add Expense
-          </Button>
-        </Tooltip>
-      </Box>
+      <Zoom in timeout={1200} style={{ transitionDelay: '200ms' }}>
+        <Box className={styles.buttonContainer}>
+          <Tooltip title="Add new expense" placement="top" arrow>
+            <Button
+              variant="contained"
+              className={styles.primaryButton}
+              onClick={() => setDialogOpen(true)}
+              startIcon={<AddIcon />}
+            >
+              Add Expense
+            </Button>
+          </Tooltip>
+        </Box>
+      </Zoom>
 
       <Dialog 
         open={isDialogOpen} 
-        onClose={() => setDialogOpen(false)}
+        onClose={handleDialogClose}
         maxWidth="sm"
         fullWidth
         TransitionComponent={Grow}
-        transitionDuration={300}
+        transitionDuration={400}
       >
         <DialogTitle className={styles.dialogTitle}>
+          <PaymentIcon />
           Add New Expense
         </DialogTitle>
         <DialogContent className={styles.dialogBox}>
@@ -266,7 +287,7 @@ const TransactionDetails = () => {
           )}
           
           <TextField
-            label="Amount"
+            label="Expense Amount"
             type="number"
             fullWidth
             value={expenseAmount}
@@ -275,25 +296,39 @@ const TransactionDetails = () => {
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <PaymentIcon color="action" />
+                  <PaymentIcon />
                 </InputAdornment>
               ),
             }}
             error={!!validationError && !expenseAmount}
-            helperText="Enter the total expense amount"
+            helperText="Enter the total expense amount in ₹"
+            autoFocus
           />
 
           <Typography variant="subtitle1" className={styles.sectionTitle}>
-            <GroupIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
-            Paid By:
+            <PersonIcon />
+            Who Paid?
           </Typography>
           <Box className={styles.memberGrid}>
             {members.map((member) => (
-              <Box key={member.name} className={styles.memberSelection}>
-                <Typography>{member.name}</Typography>
+              <Box 
+                key={member.name} 
+                className={styles.memberSelection}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePayerSelection(member.name);
+                }}
+              >
+                <Typography>
+                  {member.name === currentUser ? "Me" : member.name}
+                </Typography>
                 <Checkbox
                   checked={payer === member.name}
-                  onChange={() => handlePayerSelection(member.name)}
+                  onChange={(e) => {
+                    e.stopPropagation();
+                    handlePayerSelection(member.name);
+                  }}
+                  onClick={(e) => e.stopPropagation()}
                   className={styles.checkbox}
                 />
               </Box>
@@ -301,16 +336,29 @@ const TransactionDetails = () => {
           </Box>
 
           <Typography variant="subtitle1" className={styles.sectionTitle}>
-            <GroupIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
-            Split Between:
+            <GroupIcon />
+            Split Between
           </Typography>
           <Box className={styles.memberGrid}>
             {members.map((member) => (
-              <Box key={member.name} className={styles.memberSelection}>
-                <Typography>{member.name}</Typography>
+              <Box 
+                key={member.name} 
+                className={styles.memberSelection}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleCheckboxChange(member.name);
+                }}
+              >
+                <Typography>
+                  {member.name === currentUser ? "Me" : member.name}
+                </Typography>
                 <Checkbox
                   checked={selectedMembers.includes(member.name)}
-                  onChange={() => handleCheckboxChange(member.name)}
+                  onChange={(e) => {
+                    e.stopPropagation();
+                    handleCheckboxChange(member.name);
+                  }}
+                  onClick={(e) => e.stopPropagation()}
                   className={styles.checkbox}
                 />
               </Box>
@@ -319,13 +367,9 @@ const TransactionDetails = () => {
         </DialogContent>
         <DialogActions className={styles.dialogActions}>
           <Button 
-            onClick={() => setDialogOpen(false)}
+            onClick={handleDialogClose}
             variant="outlined"
-            sx={{ 
-              borderRadius: '8px',
-              textTransform: 'none',
-              fontWeight: 600
-            }}
+            className={styles.cancelButton}
           >
             Cancel
           </Button>
@@ -333,6 +377,7 @@ const TransactionDetails = () => {
             variant="contained"
             className={styles.primaryButton} 
             onClick={handleAddExpense}
+            disabled={!expenseAmount || !payer || selectedMembers.length === 0}
           >
             Add Expense
           </Button>

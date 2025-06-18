@@ -66,7 +66,7 @@
 .savings::before {
   content: '💰';
   position: absolute;
-  left: -10px;
+  left: 0px;
   top: 50%;
   transform: translateY(-50%);
   font-size: 2rem;
@@ -410,4 +410,9 @@
 
 .savings {
   animation: float 6s ease-in-out infinite;
+}
+@media (min-width: 1200px) {
+    .container {
+        max-width: 100% !important;
+    }
 }
