@@ -8,7 +8,6 @@ import {
   Avatar,
   AvatarGroup,
   Tooltip,
-  IconButton,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
@@ -27,16 +26,18 @@ const GroupCard = ({ group, currUser }) => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       sx={{
-        borderRadius: "20px !important",
-        width: "15vw !important",
-        margin: "1rem auto !important",
+        borderRadius: { xs: '14px', sm: '18px', md: '20px' },
+        width: { xs: '90vw', sm: '50vw', md: '22vw', lg: '16vw', xl: '12vw' },
+        minWidth: { xs: '220px', sm: '260px', md: '280px' },
+        maxWidth: { xs: '96vw', sm: '340px', md: '360px' },
+        margin: { xs: '1rem auto', md: '1.5rem auto' },
         background: "linear-gradient(135deg, #fdfbfb, #ebedee) !important",
         boxShadow: "0 10px 25px rgba(0, 0, 0, 0.15) !important",
         transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important",
         position: "relative !important",
         overflow: "hidden !important",
         "&:hover": {
-          transform: "translateY(-8px) !important",
+          transform: "translateY(-8px) scale(1.02) !important",
           boxShadow: "0 15px 30px rgba(0, 0, 0, 0.25) !important",
         },
         "&::before": {
@@ -53,15 +54,15 @@ const GroupCard = ({ group, currUser }) => {
         },
       }}
     >
-      <CardContent sx={{ padding: "1.5rem !important" }}>
+      <CardContent sx={{ padding: { xs: '1rem', sm: '1.5rem' } }}>
         <Typography
           variant="h6"
           sx={{
             color: "#5c6bc0 !important",
             fontWeight: "bold !important",
-            fontSize: "1.4rem !important",
+            fontSize: { xs: "1.1rem !important", sm: "1.3rem !important", md: "1.4rem !important" },
             textAlign: "center !important",
-            marginBottom: "1rem !important",
+            marginBottom: { xs: "0.7rem !important", sm: "1rem !important" },
             textShadow: "1px 1px 2px rgba(0, 0, 0, 0.1) !important",
             position: "relative",
             "&::after": {
@@ -70,7 +71,7 @@ const GroupCard = ({ group, currUser }) => {
               bottom: "-8px",
               left: "50%",
               transform: "translateX(-50%)",
-              width: "40px",
+              width: { xs: "28px", sm: "40px" },
               height: "3px",
               background: "linear-gradient(90deg, #7e57c2, #5c6bc0)",
               borderRadius: "2px",
@@ -83,10 +84,10 @@ const GroupCard = ({ group, currUser }) => {
 
         <Typography
           sx={{
-            fontSize: "1rem !important",
+            fontSize: { xs: "0.95rem !important", sm: "1rem !important" },
             fontWeight: "600 !important",
             color: "#333 !important",
-            marginBottom: "1rem !important",
+            marginBottom: { xs: "0.7rem !important", sm: "1rem !important" },
             textAlign: "center !important",
             display: "flex",
             alignItems: "center",
@@ -94,7 +95,7 @@ const GroupCard = ({ group, currUser }) => {
             gap: "0.5rem",
           }}
         >
-          <PeopleAltIcon sx={{ color: "#7e57c2" }} />
+          <PeopleAltIcon sx={{ color: "#7e57c2", fontSize: { xs: 20, sm: 24 } }} />
           <strong>Members</strong>
         </Typography>
 
@@ -102,15 +103,18 @@ const GroupCard = ({ group, currUser }) => {
           max={4}
           sx={{
             justifyContent: "center",
-            marginBottom: "1rem",
+            marginBottom: { xs: "0.7rem", sm: "1rem" },
             "& .MuiAvatar-root": {
               border: "2px solid #fff",
               boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+              width: { xs: 32, sm: 40 },
+              height: { xs: 32, sm: 40 },
+              fontSize: { xs: 16, sm: 20 },
             },
           }}
         >
           {group.members.map((member, idx) => (
-            <Tooltip key={idx} title={member.name}>
+            <Tooltip key={idx} title={member.name} arrow>
               <Avatar
                 sx={{
                   bgcolor: `hsl(${(idx * 137.5) % 360}, 70%, 50%)`,
@@ -129,11 +133,14 @@ const GroupCard = ({ group, currUser }) => {
         <ul
           style={{
             listStyle: "none",
-            padding: "0",
-            margin: "0",
+            padding: 0,
+            margin: 0,
             textAlign: "center",
             color: "#555",
-            fontWeight: "500",
+            fontWeight: 500,
+            maxHeight: '120px',
+            overflowY: group.members.length > 5 ? 'auto' : 'visible',
+            marginBottom: '0.5rem',
           }}
         >
           {group.members.map((member, idx) => (
@@ -143,7 +150,8 @@ const GroupCard = ({ group, currUser }) => {
                 marginBottom: "4px",
                 fontSize: "0.95rem",
                 transition: "all 0.2s ease",
-                opacity: isHovered ? 1 : 0.8,
+                opacity: isHovered ? 1 : 0.85,
+                padding: '2px 0',
               }}
             >
               {member.name}
@@ -156,7 +164,7 @@ const GroupCard = ({ group, currUser }) => {
         sx={{
           display: "flex !important",
           justifyContent: "center !important",
-          padding: "1rem !important",
+          padding: { xs: "0.7rem !important", sm: "1rem !important" },
           background: "linear-gradient(to top, rgba(126, 87, 194, 0.05), transparent)",
         }}
       >
@@ -168,15 +176,16 @@ const GroupCard = ({ group, currUser }) => {
           sx={{
             borderRadius: "30px !important",
             textTransform: "capitalize !important",
-            padding: "10px 24px !important",
+            padding: { xs: "8px 18px !important", sm: "10px 24px !important" },
             backgroundColor: "#7e57c2 !important",
             color: "#fff !important",
+            fontSize: { xs: '0.95rem', sm: '1rem' },
             boxShadow: "0 4px 10px rgba(126, 87, 194, 0.3) !important",
             transition: "all 0.3s ease !important",
             "&:hover": {
               backgroundColor: "#5e35b1 !important",
               boxShadow: "0 6px 14px rgba(94, 53, 177, 0.4) !important",
-              transform: "translateX(4px)",
+              transform: "translateX(4px) scale(1.04)",
             },
           }}
         >
