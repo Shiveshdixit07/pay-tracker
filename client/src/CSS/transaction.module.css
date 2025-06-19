@@ -156,11 +156,7 @@
 .buttonContainer {
   display: flex;
   justify-content: center;
-  position: fixed;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1000;
+  align-items: center;
 }
 
 .primaryButton {
@@ -326,7 +322,7 @@
   
   .summaryCard {
     padding: 20px !important;
-    margin-bottom: 100px !important;
+    margin-bottom: 35px !important;
   }
   
   .listItem {

@@ -27,6 +27,7 @@ import {
   GroupAdd,
 } from "@mui/icons-material";
 import axios from "axios";
+import { useTheme, useMediaQuery } from "@mui/material";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -52,6 +53,8 @@ const AddGroupDialog = ({
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const validateForm = () => {
     const newErrors = {};
@@ -114,7 +117,7 @@ const AddGroupDialog = ({
   };
 
   const handleRemovePerson = (indexToRemove) => {
-    if (people[indexToRemove].name === "Me") return; // Don't allow removing self
+    if (people[indexToRemove].name === "Me") return; 
     setPeople(people.filter((_, index) => index !== indexToRemove));
   };
 
@@ -143,17 +146,17 @@ const AddGroupDialog = ({
       open={openDialog}
       onClose={handleClose}
       TransitionComponent={Transition}
-      maxWidth="md"
+      maxWidth={isMobile ? "xs" : "md"}
       fullWidth
       PaperProps={{
         sx: {
-          borderRadius: 3,
+          borderRadius: isMobile ? 2 : 3,
           boxShadow: '0 24px 38px 3px rgba(0,0,0,0.14), 0 9px 46px 8px rgba(0,0,0,0.12), 0 11px 15px -7px rgba(0,0,0,0.20)',
           background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
           color: 'white',
           overflow: 'hidden',
-          minHeight: '600px',
-          margin: 2,
+          minHeight: isMobile ? 'auto' : '600px',
+          margin: isMobile ? 0.5 : 2,
         }
       }}
     >
@@ -164,29 +167,29 @@ const AddGroupDialog = ({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          pb: 2,
-          pt: 3,
-          px: 3,
+          pb: isMobile ? 1 : 2,
+          pt: isMobile ? 2 : 3,
+          px: isMobile ? 1.5 : 3,
           position: 'relative',
         }}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: isMobile ? 1 : 2, flex: 1 }}>
           <Avatar
             sx={{
               bgcolor: 'rgba(255,255,255,0.2)',
               backdropFilter: 'blur(10px)',
               border: '1px solid rgba(255,255,255,0.3)',
-              width: 48,
-              height: 48,
+              width: isMobile ? 36 : 48,
+              height: isMobile ? 36 : 48,
             }}
           >
-            <GroupAdd sx={{ fontSize: 24 }} />
+            <GroupAdd sx={{ fontSize: isMobile ? 18 : 24 }} />
           </Avatar>
           <Box sx={{ flex: 1 }}>
-            <Typography variant="h5" component="div" sx={{ fontWeight: 600, fontSize: '1.5rem' }}>
+            <Typography variant="h5" component="div" sx={{ fontWeight: 600, fontSize: isMobile ? '1.1rem' : '1.5rem' }}>
               Create New Group
             </Typography>
-            <Typography variant="body2" sx={{ opacity: 0.8, mt: 0.5, fontSize: '0.9rem' }}>
+            <Typography variant="body2" sx={{ opacity: 0.8, mt: 0.5, fontSize: isMobile ? '0.8rem' : '0.9rem' }}>
               Set up expense sharing with friends
             </Typography>
           </Box>
@@ -196,8 +199,8 @@ const AddGroupDialog = ({
           sx={{
             color: 'white',
             bgcolor: 'rgba(255,255,255,0.1)',
-            width: 40,
-            height: 40,
+            width: isMobile ? 32 : 40,
+            height: isMobile ? 32 : 40,
             '&:hover': {
               bgcolor: 'rgba(255,255,255,0.2)',
             },
@@ -213,16 +216,16 @@ const AddGroupDialog = ({
           color: 'black',
           mx: 0,
           mb: 0,
-          borderRadius: '16px 16px 0 0',
+          borderRadius: isMobile ? '12px 12px 0 0' : '16px 16px 0 0',
           p: 0,
           flex: 1,
           display: 'flex',
           flexDirection: 'column',
-          minHeight: 400,
+          minHeight: isMobile ? 200 : 400,
         }}
       >
-        <Box sx={{ p: 3, flex: 1 }}>
-          <Box sx={{ mb: 4 }}>
+        <Box sx={{ p: isMobile ? 1.5 : 3, flex: 1 }}>
+          <Box sx={{ mb: isMobile ? 2 : 4 }}>
             <TextField
               label="Group Name"
               fullWidth
@@ -243,7 +246,7 @@ const AddGroupDialog = ({
               sx={{
                 '& .MuiOutlinedInput-root': {
                   borderRadius: 2,
-                  height: 56,
+                  height: isMobile ? 44 : 56,
                   '&:hover fieldset': {
                     borderColor: '#667eea',
                   },
@@ -255,18 +258,19 @@ const AddGroupDialog = ({
             />
           </Box>
 
-          <Divider sx={{ my: 3 }} />
+          <Divider sx={{ my: isMobile ? 2 : 3 }} />
 
-          <Box sx={{ mb: 3 }}>
+          <Box sx={{ mb: isMobile ? 2 : 3 }}>
             <Typography
               variant="h6"
               sx={{
-                mb: 3,
+                mb: isMobile ? 2 : 3,
                 color: '#333',
                 fontWeight: 600,
                 display: 'flex',
                 alignItems: 'center',
                 gap: 1,
+                fontSize: isMobile ? '1rem' : undefined,
               }}
             >
               <Person color="primary" />
@@ -276,7 +280,7 @@ const AddGroupDialog = ({
             <Paper
               elevation={0}
               sx={{
-                p: 3,
+                p: isMobile ? 1.5 : 3,
                 bgcolor: '#f8f9fa',
                 borderRadius: 2,
                 border: '1px solid #e9ecef',
@@ -284,9 +288,9 @@ const AddGroupDialog = ({
             >
               <Box sx={{ 
                 display: 'flex', 
-                gap: 2, 
+                gap: isMobile ? 1 : 2, 
                 mb: 2,
-                flexDirection: { xs: 'column', sm: 'row' },
+                flexDirection: isMobile ? 'column' : { xs: 'column', sm: 'row' },
                 alignItems: 'stretch'
               }}>
                 <TextField
@@ -299,7 +303,7 @@ const AddGroupDialog = ({
                     '& .MuiOutlinedInput-root': {
                       borderRadius: 2,
                       bgcolor: 'white',
-                      height: 56,
+                      height: isMobile ? 44 : 56,
                     },
                   }}
                   InputProps={{
@@ -320,7 +324,7 @@ const AddGroupDialog = ({
                     '& .MuiOutlinedInput-root': {
                       borderRadius: 2,
                       bgcolor: 'white',
-                      height: 56,
+                      height: isMobile ? 44 : 56,
                     },
                   }}
                   InputProps={{
@@ -338,9 +342,10 @@ const AddGroupDialog = ({
                   sx={{
                     bgcolor: '#667eea',
                     color: 'white',
-                    width: 56,
-                    height: 56,
+                    width: isMobile ? 44 : 56,
+                    height: isMobile ? 44 : 56,
                     flexShrink: 0,
+                    alignSelf: isMobile ? 'flex-end' : 'center',
                     '&:hover': {
                       bgcolor: '#5a6fd8',
                     },
@@ -365,9 +370,10 @@ const AddGroupDialog = ({
             <Typography
               variant="h6"
               sx={{
-                mb: 2,
+                mb: isMobile ? 1.5 : 2,
                 color: '#333',
                 fontWeight: 600,
+                fontSize: isMobile ? '1rem' : undefined,
               }}
             >
               Group Members ({people.length})
@@ -376,9 +382,10 @@ const AddGroupDialog = ({
             <Box sx={{ 
               display: 'flex', 
               flexWrap: 'wrap', 
-              gap: 2,
+              gap: isMobile ? 1 : 2,
               minHeight: 100,
-              alignItems: 'flex-start'
+              alignItems: 'flex-start',
+              flexDirection: isMobile ? 'column' : 'row',
             }}>
               {people.map((person, index) => (
                 <Fade in key={index} timeout={300}>
@@ -387,12 +394,13 @@ const AddGroupDialog = ({
                     sx={{
                       display: 'flex',
                       alignItems: 'center',
-                      gap: 2,
-                      p: 2,
+                      gap: isMobile ? 1 : 2,
+                      p: isMobile ? 1.5 : 2,
                       borderRadius: 2,
                       border: person.name === "Me" ? '2px solid #4caf50' : '1px solid #e0e0e0',
                       bgcolor: person.name === "Me" ? '#f1f8e9' : 'white',
-                      minWidth: 200,
+                      minWidth: isMobile ? 'unset' : 200,
+                      width: isMobile ? '100%' : 'auto',
                       position: 'relative',
                     }}
                   >
@@ -400,24 +408,24 @@ const AddGroupDialog = ({
                       sx={{
                         bgcolor: getAvatarColor(person.name),
                         color: 'white',
-                        fontSize: '0.9rem',
+                        fontSize: isMobile ? '0.8rem' : '0.9rem',
                         fontWeight: 600,
-                        width: 40,
-                        height: 40,
+                        width: isMobile ? 32 : 40,
+                        height: isMobile ? 32 : 40,
                       }}
                     >
                       {getInitials(person.name)}
                     </Avatar>
                     <Box sx={{ flex: 1, minWidth: 0 }}>
-                      <Typography variant="body1" sx={{ fontWeight: 500, fontSize: '0.95rem' }}>
+                      <Typography variant="body1" sx={{ fontWeight: 500, fontSize: isMobile ? '0.9rem' : '0.95rem' }}>
                         {person.name}
                       </Typography>
-                      <Typography variant="caption" sx={{ opacity: 0.7, fontSize: '0.8rem' }}>
+                      <Typography variant="caption" sx={{ opacity: 0.7, fontSize: isMobile ? '0.75rem' : '0.8rem' }}>
                         {person.contact}
                       </Typography>
                     </Box>
                     {person.name === "Me" ? (
-                      <Check sx={{ color: 'green', fontSize: 20 }} />
+                      <Check sx={{ color: 'green', fontSize: isMobile ? 16 : 20 }} />
                     ) : (
                       <IconButton
                         size="small"
@@ -442,15 +450,15 @@ const AddGroupDialog = ({
               <Paper
                 elevation={0}
                 sx={{
-                  p: 4,
+                  p: isMobile ? 2 : 4,
                   textAlign: 'center',
                   bgcolor: '#f5f5f5',
                   borderRadius: 2,
                   border: '2px dashed #ccc',
                 }}
               >
-                <Group sx={{ fontSize: 48, color: '#ccc', mb: 2 }} />
-                <Typography color="text.secondary" variant="body1">
+                <Group sx={{ fontSize: isMobile ? 32 : 48, color: '#ccc', mb: 2 }} />
+                <Typography color="text.secondary" variant="body1" sx={{ fontSize: isMobile ? '0.95rem' : undefined }}>
                   No members added yet. Add some friends to get started!
                 </Typography>
               </Paper>
@@ -462,11 +470,12 @@ const AddGroupDialog = ({
       <DialogActions
         sx={{
           background: 'white',
-          px: 3,
-          pb: 3,
-          pt: 2,
-          gap: 2,
+          px: isMobile ? 1.5 : 3,
+          pb: isMobile ? 1.5 : 3,
+          pt: isMobile ? 1 : 2,
+          gap: isMobile ? 1 : 2,
           borderTop: '1px solid #f0f0f0',
+          flexDirection: isMobile ? 'column' : 'row',
         }}
       >
         <Button
@@ -474,15 +483,17 @@ const AddGroupDialog = ({
           variant="outlined"
           sx={{
             borderRadius: 2,
-            px: 4,
-            py: 1.5,
+            px: isMobile ? 2 : 4,
+            py: isMobile ? 1 : 1.5,
             borderColor: '#ccc',
             color: '#666',
-            height: 48,
-            minWidth: 120,
+            height: isMobile ? 40 : 48,
+            minWidth: isMobile ? '100%' : 120,
+            width: isMobile ? '100%' : 'auto',
             '&:hover': {
               borderColor: '#999',
-              bgcolor: 'rgba(0,0,0,0.04)',
+              color: 'black',
+              bgcolor: 'rgba(0,0,0,0.04) !important',
             },
           }}
         >
@@ -494,10 +505,11 @@ const AddGroupDialog = ({
           disabled={isLoading}
           sx={{
             borderRadius: 2,
-            px: 4,
-            py: 1.5,
-            height: 48,
-            minWidth: 160,
+            px: isMobile ? 2 : 4,
+            py: isMobile ? 1 : 1.5,
+            height: isMobile ? 40 : 48,
+            minWidth: isMobile ? '100%' : 160,
+            width: isMobile ? '100%' : 'auto',
             background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
             boxShadow: '0 4px 15px 0 rgba(102, 126, 234, 0.4)',
             '&:hover': {
