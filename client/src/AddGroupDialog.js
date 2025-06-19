@@ -82,7 +82,7 @@ const AddGroupDialog = ({
 
     try {
       const response = await axios.post(
-        `http://localhost:5000/${currUser}/api/groups`,
+        `https://pay-tracker-backend.onrender.com/${currUser}/api/groups`,
         groupData
       );
 
@@ -97,7 +97,7 @@ const AddGroupDialog = ({
         setErrors({});
 
         try {
-          await axios.post(`http://localhost:5000/${id}/api/expenses`, people);
+          await axios.post(`https://pay-tracker-backend.onrender.com/${id}/api/expenses`, people);
         } catch (error) {
           console.error("Error adding Transaction group:", error);
           alert("An error occurred while adding the Transaction group.");

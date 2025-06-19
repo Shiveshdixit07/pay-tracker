@@ -55,7 +55,7 @@ const TransactionDetails = () => {
       const handleGetExpenses = async () => {
         try {
           setLoading(true);
-          const url = `http://localhost:5000/${group._id}/api/expenses`;
+          const url = `https://pay-tracker-backend.onrender.com/${group._id}/api/expenses`;
           const response = await axios.get(url);
           if (response.status === 200) {
             setMembers(response.data[0].members || []);
@@ -127,7 +127,7 @@ const TransactionDetails = () => {
     setMembers(updatedMembers);
 
     try {
-      const url = `http://localhost:5000/${group._id}/api/expenses`;
+      const url = `https://pay-tracker-backend.onrender.com/${group._id}/api/expenses`;
       const response = await axios.put(url, updatedMembers);
 
       if (response.status === 201) {

@@ -82,7 +82,7 @@ const Dashboard = ({ UserEmail, userName, userPhoneNumber }) => {
     const getAllGroups = async () => {
       setLoading(true);
       try {
-        const url = `http://localhost:5000/${UserEmail}/api/balance`;
+        const url = `https://pay-tracker-backend.onrender.com/${UserEmail}/api/balance`;
         const response = await axios.get(url);
         if (response.data.balance !== undefined) {
           setSavings(response.data.balance);
@@ -107,7 +107,7 @@ const Dashboard = ({ UserEmail, userName, userPhoneNumber }) => {
       
       try {
         if (UserEmail) {
-          const url = `http://localhost:5000/${UserEmail}/api/groups`;
+          const url = `https://pay-tracker-backend.onrender.com/${UserEmail}/api/groups`;
           const response = await axios.get(url);
           if (response.status === 200) {
             setGroups(response.data);
@@ -128,7 +128,7 @@ const Dashboard = ({ UserEmail, userName, userPhoneNumber }) => {
   const handleRefresh = async () => {
     setRefreshing(true);
     try {
-      const url = `http://localhost:5000/${UserEmail}/api/groups`;
+      const url = `https://pay-tracker-backend.onrender.com/${UserEmail}/api/groups`;
       const response = await axios.get(url);
       if (response.status === 200) {
         setGroups(response.data);
@@ -151,7 +151,7 @@ const Dashboard = ({ UserEmail, userName, userPhoneNumber }) => {
           { date: new Date().toLocaleDateString(), amount: expense },
         ];
         setExpenseHistory(updatedExpenseHistory);
-        const url = `http://localhost:5000/${UserEmail}/api/balance`;
+        const url = `https://pay-tracker-backend.onrender.com/${UserEmail}/api/balance`;
         localStorage.setItem(`savings:${UserEmail}`, d);
         const balance = d;
 
@@ -174,7 +174,7 @@ const Dashboard = ({ UserEmail, userName, userPhoneNumber }) => {
     if (creditAmt > 0) {
       const d = Number(creditAmt) + Number(savings);
       setSavings(d);
-      const url = `http://localhost:5000/${UserEmail}/api/balance`;
+      const url = `https://pay-tracker-backend.onrender.com/${UserEmail}/api/balance`;
       localStorage.setItem(`savings:${UserEmail}`, d);
       const balance = d;
 
