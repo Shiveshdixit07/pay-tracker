@@ -293,13 +293,21 @@ const TransactionDetails = () => {
             value={expenseAmount}
             onChange={(e) => setExpenseAmount(e.target.value)}
             className={styles.textField}
-            InputProps={{
+            slotProps={{
               startAdornment: (
                 <InputAdornment position="start">
                   <PaymentIcon />
                 </InputAdornment>
               ),
             }}
+            sx={{
+            '& input[type=number]::-webkit-outer-spin-button, & input[type=number]::-webkit-inner-spin-button': {
+              WebkitAppearance: 'none',
+              margin: 0,
+            },
+            '& input[type=number]': {
+              MozAppearance: 'textfield',
+            },}}
             error={!!validationError && !expenseAmount}
             helperText="Enter the total expense amount in ₹"
             autoFocus
@@ -369,13 +377,11 @@ const TransactionDetails = () => {
           <Button 
             onClick={handleDialogClose}
             variant="outlined"
-            className={styles.cancelButton}
           >
             Cancel
           </Button>
           <Button 
             variant="contained"
-            className={styles.primaryButton} 
             onClick={handleAddExpense}
             disabled={!expenseAmount || !payer || selectedMembers.length === 0}
           >

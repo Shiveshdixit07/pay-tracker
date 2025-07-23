@@ -42,6 +42,7 @@ import {
   Filler,
 } from "chart.js";
 import styles from "./CSS/Dashboard.module.css";
+import InitialBalanceDialog from "./InitialBalanceDialog";
 
 ChartJS.register(
   CategoryScale,
@@ -69,6 +70,7 @@ const Dashboard = ({ UserEmail, userName, userPhoneNumber }) => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "info" });
+  const [showInitialBalanceDialog, setShowInitialBalanceDialog] = useState(false);
 
   const showSnackbar = (message, severity = "info") => {
     setSnackbar({ open: true, message, severity });
@@ -89,16 +91,7 @@ const Dashboard = ({ UserEmail, userName, userPhoneNumber }) => {
           setExpenseHistory(response.data.expenseHistory);
           localStorage.setItem(`savings:${UserEmail}`, response.data.balance);
         } else if (!localStorage.getItem(`savings:${UserEmail}`)) {
-          const initialBalance = prompt(
-            "Please enter your current available balance: ₹"
-          );
-          const balance = initialBalance ? parseInt(initialBalance, 10) : 10000;
-          setSavings(balance);
-          localStorage.setItem(`savings:${UserEmail}`, balance);
-          await axios.post(url, {
-            balance,
-            expenseHistory,
-          });
+          setShowInitialBalanceDialog(true);
         }
       } catch (error) {
         console.error("Error fetching balance:", error);
@@ -204,6 +197,23 @@ const Dashboard = ({ UserEmail, userName, userPhoneNumber }) => {
     }
   };
 
+  const handleInitialBalanceSubmit = async (balance) => {
+    setSavings(balance);
+    localStorage.setItem(`savings:${UserEmail}`, balance);
+    setShowInitialBalanceDialog(false);
+    try {
+      const url = `https://pay-tracker-backend.onrender.com/${UserEmail}/api/balance`;
+      await axios.post(url, {
+        balance,
+        expenseHistory: [],
+      });
+      setExpenseHistory([]);
+      showSnackbar("Initial balance set successfully", "success");
+    } catch (error) {
+      showSnackbar("Error saving initial balance", "error");
+    }
+  };
+
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -302,6 +312,11 @@ const Dashboard = ({ UserEmail, userName, userPhoneNumber }) => {
 
   return (
     <Container className={styles.container}>
+      <InitialBalanceDialog
+        open={showInitialBalanceDialog}
+        onClose={() => setShowInitialBalanceDialog(false)}
+        onSubmit={handleInitialBalanceSubmit}
+      />
       <Fade in timeout={1000}>
         <Box className={styles.header}>
           <Typography variant="h3" className={styles.headerTitle}>
@@ -373,9 +388,17 @@ const Dashboard = ({ UserEmail, userName, userPhoneNumber }) => {
                   onChange={(e) => setCreditAmt(e.target.value)}
                   className={styles.transactionAmount}
                   variant="outlined"
-                  InputProps={{
+                  slotProps={{
                     startAdornment: <Typography sx={{ mr: 1, color: 'text.secondary' }}>₹</Typography>,
                   }}
+                  sx={{
+            '& input[type=number]::-webkit-outer-spin-button, & input[type=number]::-webkit-inner-spin-button': {
+              WebkitAppearance: 'none',
+              margin: 0,
+            },
+            '& input[type=number]': {
+              MozAppearance: 'textfield',
+            },}}
                 />
                 <Button
                   variant="contained"
@@ -396,9 +419,17 @@ const Dashboard = ({ UserEmail, userName, userPhoneNumber }) => {
                   onChange={(e) => setExpense(e.target.value)}
                   className={styles.transactionAmount}
                   variant="outlined"
-                  InputProps={{
+                  slotProps={{
                     startAdornment: <Typography sx={{ mr: 1, color: 'text.secondary' }}>₹</Typography>,
                   }}
+                  sx={{
+            '& input[type=number]::-webkit-outer-spin-button, & input[type=number]::-webkit-inner-spin-button': {
+              WebkitAppearance: 'none',
+              margin: 0,
+            },
+            '& input[type=number]': {
+              MozAppearance: 'textfield',
+            },}}
                 />
                 <Button
                   variant="contained"
